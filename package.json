@@ -29,7 +29,7 @@
         "version:add": "git add ."
     },
     "dependencies": {
-        "aws-sdk": "2.918.0",
+        "aws-sdk": "^2.928.0",
         "globby": "^11.0.3",
         "mime": "^2.5.2",
         "upath": "^2.0.1"
@@ -45,8 +45,8 @@
         "@types/mime": "2.0.3",
         "@types/mkdirp": "1.0.1",
         "@types/node": "15.12.2",
-        "@typescript-eslint/eslint-plugin": "4.26.1",
-        "@typescript-eslint/parser": "4.26.1",
+        "@typescript-eslint/eslint-plugin": "^4.27.0",
+        "@typescript-eslint/parser": "^4.27.0",
         "ava": "3.15.0",
         "eslint": "7.28.0",
         "js-yaml": "4.1.0",
