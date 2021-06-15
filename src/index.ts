@@ -49,12 +49,14 @@ hexo.extend.deployer.register(
         const results = await Promise.all(files.map(async (filepath) => {
             const Key = path.toUnix(path.join(deploy.prefix || '', path.relative(publicDir, filepath)));
             const ContentType = mime.getType(filepath) || undefined;
+            const CacheTime = ContentType === 'text/html' ? 86400 : 31536000;
+            const CacheControl = `CacheControl: 'max-age=${CacheTime}'`;
             await s3.putObject({
                 Bucket: deploy.bucket,
                 Key,
                 Body: fs.createReadStream(filepath),
                 ContentType,
-                ACL: 'public-read',
+                CacheControl,
             }).promise();
             log.info(`Uploaded ${Key} [${ContentType}]`);
         }));
