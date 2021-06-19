@@ -50,7 +50,7 @@ hexo.extend.deployer.register(
             const Key = path.toUnix(path.join(deploy.prefix || '', path.relative(publicDir, filepath)));
             const ContentType = mime.getType(filepath) || undefined;
             const CacheTime = ContentType === 'text/html' ? 86400 : 31536000;
-            const CacheControl = `CacheControl: 'max-age=${CacheTime}'`;
+            const CacheControl = `public, max-age=${CacheTime}`;
             await s3.putObject({
                 Bucket: deploy.bucket,
                 Key,
