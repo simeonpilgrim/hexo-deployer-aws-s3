@@ -43,13 +43,14 @@ hexo.extend.deployer.register(
         const {log, public_dir: publicDir} = this;
         const globPattern = path.join(publicDir, '**/*');
         const files = await globby(globPattern, {...deploy.glob, onlyFiles: true});
+        const smallCache = new Set(['text/html', 'text/css', 'application/xml', 'application/javascript']);
         const clientConfig = {region: deploy.region};
         const s3 = deploy.test ? new S3Mock(deploy.test, clientConfig) : new AWSS3(clientConfig);
         log.info(`Found ${files.length} files`);
         const results = await Promise.all(files.map(async (filepath) => {
             const Key = path.toUnix(path.join(deploy.prefix || '', path.relative(publicDir, filepath)));
-            const ContentType = mime.getType(filepath) || undefined;
-            const CacheTime = ContentType === 'text/html' ? 86400 : 31536000;
+            const ContentType = mime.getType(filepath) || '';
+            const CacheTime = smallCache.has(ContentType) ? 86400 : 31536000;
             const CacheControl = `public, max-age=${CacheTime}`;
             await s3.putObject({
                 Bucket: deploy.bucket,
@@ -58,7 +59,8 @@ hexo.extend.deployer.register(
                 ContentType,
                 CacheControl,
             }).promise();
-            log.info(`Uploaded ${Key} [${ContentType}]`);
+
+            log.info(`Uploaded ${Key} [${ContentType}] ${CacheControl}`);
         }));
         log.info(`Uploaded ${results.length} files`);
     },
